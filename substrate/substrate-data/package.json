@@ -1,0 +1,32 @@
+{
+  "name": "@subsquid/substrate-data",
+  "description": "Data definition, parsing and fetching for substrate based chains",
+  "version": "0.0.0",
+  "license": "GPL-3.0-or-later",
+  "repository": "git@github.com:subsquid/squid.git",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rm -rf lib && tsc"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@subsquid/logger": "^1.0.0",
+    "@subsquid/scale-codec": "^2.0.0",
+    "@subsquid/util-internal": "^2.0.0",
+    "@subsquid/util-internal-hex": "^1.0.0",
+    "@subsquid/util-naming": "^1.0.0",
+    "@substrate/calc": "^0.2.8",
+    "blake2b": "^2.1.4"
+  },
+  "peerDependencies": {
+    "@subsquid/substrate-metadata": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.18.25"
+  }
+}
