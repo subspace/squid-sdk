@@ -15,7 +15,6 @@ export class RawSrc {
 
     // cache
     private lastBlock?: RawBlock
-    private lastTopBlock?: RawBlock
     private headBlock?: PartialRawBlock
     private headBlockExtrinsicsRequested = false
     private finalizedHeadBlock?: PartialRawBlock
@@ -96,7 +95,7 @@ export class RawSrc {
             tasks.push(this.setValidators(blocks))
         }
         await Promise.all(tasks)
-        this.setLastBlock(last(blocks) as RawBlock)
+        this.lastBlock = last(blocks) as RawBlock
     }
 
     private async setRuntimeVersions(blocks: PartialRawBlock[]): Promise<void> {
@@ -199,34 +198,19 @@ export class RawSrc {
             await this.setValidator(block, this.lastBlock)
         }
 
-        return this.setLastBlock(block)
+        return this.lastBlock = block
     }
 
-    private async setValidator(block: PartialRawBlock, prev?: PartialRawBlock): Promise<void> {
-        for (let cached of this.getLastBlocks(prev)) {
-            if (
-                (cached.header.hash === block.header.parentHash || cached.header.parentHash === block.header.hash) &&
-                cached.sessionIndex === block.sessionIndex &&
-                cached.validators
-            ) {
-                block.validators = cached.validators
-                return
-            }
+    private async setValidator(block: PartialRawBlock, cached?: PartialRawBlock): Promise<void> {
+        if (
+            (cached?.header.hash === block.header.parentHash || cached?.header.parentHash === block.header.hash) &&
+            cached.sessionIndex === block.sessionIndex &&
+            cached.validators
+        ) {
+            block.validators = cached.validators
+        } else {
+            block.validators = await this.rpc.getStorage(block.header.hash, STORAGE.validators)
         }
-        block.validators = await this.rpc.getStorage(block.header.hash, STORAGE.validators)
-    }
-
-    private *getLastBlocks(last?: PartialRawBlock): Iterable<PartialRawBlock> {
-        if (last) yield last
-        if (this.lastTopBlock) yield this.lastTopBlock
-    }
-
-    private setLastBlock(block: RawBlock): RawBlock {
-        this.lastBlock = block
-        if (this.lastTopBlock == null || this.lastTopBlock.header.height <= block.header.height) {
-            this.lastTopBlock = block
-        }
-        return block
     }
 
     private async loadBlock(

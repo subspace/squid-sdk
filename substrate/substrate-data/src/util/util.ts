@@ -1,5 +1,7 @@
+import {toHex} from '@subsquid/util-internal-hex'
 import assert from 'assert'
-import {ClosedRange, Qty} from '../interfaces/misc'
+import blake2b from 'blake2b'
+import {Bytes, ClosedRange, Qty} from '../interfaces/misc'
 
 
 export function qty2Int(val: Qty): number {
@@ -53,4 +55,14 @@ export function* splitIntoStrides(strideSize: number, range: ClosedRange): Itera
     } else {
         yield range
     }
+}
+
+
+export function blake2bHash(bytes: Uint8Array | Bytes, len: number): Bytes {
+    if (typeof bytes == 'string') {
+        bytes = Buffer.from(bytes)
+    }
+    let hash = blake2b(len)
+    hash.update(bytes)
+    return toHex(hash.digest())
 }

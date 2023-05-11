@@ -115,3 +115,5 @@ export function groupBy<T, G>(list: Iterable<T>, group: (t: T) => G): Map<G, T[]
     }
     return grouping
 }
+
+

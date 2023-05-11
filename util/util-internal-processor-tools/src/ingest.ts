@@ -60,6 +60,10 @@ export interface HotDataSource<R> extends ArchiveDataSource<R> {
     getFinalizedHead(): Promise<HashAndHeight>
 }
 
+export interface Ds {
+    getNewBlocks(chain: HashAndHeight[]): AsyncIterable<{blocks: HashAndHeight[], finalizedHead: HashAndHeight}>
+}
+
 
 export interface ArchiveIngestOptions<R> {
     requests: BatchRequest<R>[]
