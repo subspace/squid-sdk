@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - '!firesquid'
+  pull_request:
+    branches:
+        - firesquid
 
 env:
   INGEST_NAME: ghcr.io/${{ github.repository_owner }}/substrate-ingest:latest:${{ github.event.number }}
