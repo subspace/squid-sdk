@@ -307,19 +307,10 @@ export class Ingest<R extends BatchRequest> {
     }
 
     async fetchArchiveHeight(): Promise<number> {
-        try {
-            let res: any = await this.options.archiveRequest('query { status { head } }')
-            this.setArchiveHeight(res)
-            return this.archiveHeight
-        } catch (
-            e
-        ) {
-            let res: any = await this.options.archiveRequest(`query { metadata(limit: 1, orderBy: blockHeight_DESC) { blockHeight } }`)
-            this.setArchiveHeightMetadata(res)
-            return this.archiveHeight
-        }
-        
-        
+        let res: any = await this.options.archiveRequest(`query { metadata(limit: 1, orderBy: blockHeight_DESC) { blockHeight } }`)
+        this.setArchiveHeightMetadata(res)
+
+        return this.archiveHeight
     }
 
     private setArchiveHeight(res: {status: {head: number}}): void {
